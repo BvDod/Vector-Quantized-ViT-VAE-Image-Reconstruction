@@ -1,9 +1,11 @@
 from functions.dataHandling import get_dataset
 from functions.Visualize import plot_grid_samples
+from models.vq_vae import Encoder, VQVAE
 
 import torch
 from torch.utils.data import DataLoader
 
+from torchinfo import summary
 
 
 
@@ -22,6 +24,14 @@ def train(settings):
     
     dataloader_train = DataLoader(train, batch_size=64, shuffle=True, drop_last=True)
     dataloader_test = DataLoader(test, batch_size=64)
+
+    print(summary(Encoder(), input_size=(64, 1, 28,28)))
+    model = VQVAE()
+
+    for x_train, y_train in dataloader_train:
+        print(x_train.shape)
+        pred = model(x_train)
+        exit()
     
 
 
@@ -34,6 +44,6 @@ def train(settings):
 if __name__ == "__main__":
     train_settings = {
         "dataset" : "MNIST",
-        "print_samples": True
+        "print_samples": False
     }
     train(train_settings)
