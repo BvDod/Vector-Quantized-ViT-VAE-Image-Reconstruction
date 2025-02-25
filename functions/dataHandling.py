@@ -15,7 +15,8 @@ def get_dataset(dataset_name: str, print_stats = False):
     if not dataset_name in DATASETS:
         print("ERROR: invalid dataset name: {dataset_name}")
     
-    img_transforms = transforms.Compose([transforms.ToTensor(),])
+    img_transforms = transforms.Compose([transforms.ToTensor()])
+
     train = DATASETS[dataset_name](root="./datasets/", train = True, transform=img_transforms)
     test = DATASETS[dataset_name](root="./datasets/", train = False, transform=img_transforms)
 
