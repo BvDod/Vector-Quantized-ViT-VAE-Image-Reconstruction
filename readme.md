@@ -16,7 +16,7 @@ The following results were obtained on the dataset as publised in (*Identifying 
 Kermany, Daniel S. et al.) The dataset contains a total of 5,863 images, with a resolution of 256x256, where each image is labelled with the presence or abscence of Pneumonia. see `train_x_ray.py` for the used script and hyperparameters.
 #### X-Ray: Validation Reconstruction
 
-<img src="figures/xray.png" width="500">
+<img src="figures/xray.png" width="700">
 
 ![alt text](figures/xray_loss.png)
 
@@ -24,14 +24,14 @@ Kermany, Daniel S. et al.) The dataset contains a total of 5,863 images, with a 
 The STL-10 dataset is an image recognition dataset for developing unsupervised feature learning, were a very large set of unlabeled examples is provided with a resolution of 96x96. see `train_SLT10.py` for the used script and hyperparameters.
 
 #### SLT10: Validation Reconstruction
-<img src="figures/slt10.png" width="500">
+<img src="figures/slt10.png" width="700">
 
 ![alt text](figures/slt10_loss.png)
 
 ### MNIST
 MNIST is handwritten digit recognition dataset containing 70,000 grayscale images of handwritten digits, sized 28x28 pixels. see `train_MNIST.py` for the used script and hyperparameters.
 
-<img src="figures/mnist.png" width="500">
+<img src="figures/mnist.png" width="700">
 
 ![alt text](figures/mnist_loss.png)
 
