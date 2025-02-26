@@ -3,7 +3,7 @@ This repository contains my PyTorch implementation of the Vector Quantized Varia
 
 ## Introduction
 
-A downside of having these discrete quantized vectors as the latent space is that there is no normally distributed latent space where we can sample new valid samples from. See "improvement" section how that could be changed.
+A downside of having these discrete quantized vectors as the latent space is that there is no normally distributed latent space where we can sample new valid samples from. See "improvement" section how that could be changed. My actual motivation for this implementation is that i want to train such a VQ-VAE on large amount of medical images, and then use the feature extraction capabilities of the encoder to generate meaningfull encodings to improve model performance for prediction problems with litle available labelled data.
 
 The training loop can be found in `train.py`, and the implementation of the VQ-VAE can be found in `model/vq_vae.py`
 
