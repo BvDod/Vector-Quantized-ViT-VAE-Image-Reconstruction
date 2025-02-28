@@ -7,8 +7,11 @@ A downside of having these discrete quantized vectors as the latent space is tha
 
 The training loop can be found in `train.py`, and the implementation of the VQ-VAE can be found in `model/vq_vae.py`
 
+## Universal embeddings: extraction and prediction demos:
+A demonstration of how a trained VQ VAE model can be used to first extract usefull features, and to then use these extracted features in a prediction model, can be found in `extract_embeddings.py` and 'predict.py'.
 
-## Demonstration: 3 datasets
+
+## Demonstration: Reconstruction on 3 different datasets
 The effectivity of the implementation was shown on three different datasets: MNIST, SLT10 and a Pneumonia Chest X-Ray dataset. The datasets were chosen based on that they differ when it comes to the resolution, the diversity of images, and the presence of color.
 
 ### Pneumonia Chest X-Ray dataset
