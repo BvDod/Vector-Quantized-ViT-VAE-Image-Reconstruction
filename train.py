@@ -74,7 +74,7 @@ def train_vq_vae(settings):
 
         #  Early stopping
         epoch_delta = settings["early_stopping_epochs"]
-        if len(train_losses) > epoch_delta and train_losses[-epoch_delta] < train_losses[-1]:
+        if len(train_losses) > epoch_delta and max(train_losses[-epoch_delta:-1]) < train_losses[-1]:
             print("Early stopping")
             break
         
@@ -99,6 +99,11 @@ def train_vq_vae(settings):
             test_losses.append(sum(test_losses_epoch) / len(test_losses_epoch))
             writer.add_scalar("Loss/test", test_losses[-1], epoch)
 
+        if settings["save_model"]:
+            import os
+            path = f"models/saved_models/{settings["dataset"]}/"
+            os.makedirs(path, exist_ok = True) 
+            torch.save(model.state_dict(), path + "model.pt")
 
 if __name__ == "__main__":
     settings = {
