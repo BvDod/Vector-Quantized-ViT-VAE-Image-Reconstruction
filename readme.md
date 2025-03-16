@@ -4,6 +4,10 @@ This repository contains my PyTorch implementation of the Vector Quantized Varia
 
 The implementation is demonstrated by reconstructing on 3 different datasets. It is also shown how embeddings can be extracted, and how these can be used for training a prediction model.
 
+![1](https://github.com/user-attachments/assets/17848f6f-7924-42a2-926e-cc9e13c6a03e)
+
+*Animation of the progression of image reconstruction during training: shows a reconstructed validation sample for each epoch while training*
+
 ## Introduction
 The Vector Quantized VAE is a variation og the Variational Aut Encoder, where the latent space consists of a limited amount of discrete embeddings, which a "quantized" to using a closest neighbour search. These discrete embeddings are learned during training, and result in easier training, less likelyhood of posterior-collapse and often sharper looking reconstrcution.
 
