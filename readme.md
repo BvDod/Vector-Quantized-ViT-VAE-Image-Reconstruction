@@ -8,6 +8,12 @@ The implementation is demonstrated by reconstructing on 3 different datasets. It
 
 *Animation of the progression of image reconstruction during training: shows a reconstructed validation sample for each epoch while training*
 
+## Roadmap
+- Implement hierarchical latent representations to model image information at several scales simultaneously.
+- Replace convolution based encoder/decoders by vision transformers
+- allow model to directly reconstruct 3D data.
+
+  
 ## Introduction
 The Vector Quantized VAE is a variation og the Variational Aut Encoder, where the latent space consists of a limited amount of discrete embeddings, which a "quantized" to using a closest neighbour search. These discrete embeddings are learned during training, and result in easier training, less likelyhood of posterior-collapse and often sharper looking reconstrcution.
 
