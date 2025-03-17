@@ -15,7 +15,7 @@ The implementation is demonstrated by reconstructing on 3 different datasets. It
 
   
 ## Introduction
-The Vector Quantized VAE is a variation og the Variational Aut Encoder, where the latent space consists of a limited amount of discrete embeddings, which a "quantized" to using a closest neighbour search. These discrete embeddings are learned during training, and result in easier training, less likelyhood of posterior-collapse and often sharper looking reconstrcution.
+The Vector Quantized VAE is a variation of the Variational Auto Encoder, where the latent space consists of a limited amount of discrete embeddings, which are "quantized" to, using a closest neighbour search. These discrete embeddings are learned during training, and result in easier training, less likelyhood of posterior-collapse and often sharper looking reconstructions.
 
 
 A downside of having these discrete quantized vectors as the latent space is that there is no normally distributed latent space where we can sample new valid samples from. See "improvement" section how that could be mitigated.
@@ -29,7 +29,7 @@ A demonstration of how a trained VQ VAE model can be used to first extract usefu
 
 
 ## Demonstration: Reconstruction on 3 different datasets
-The effectivity of the implementation was shown on three different datasets: MNIST, SLT10 and a Pneumonia Chest X-Ray dataset. The datasets were chosen based on that they differ when it comes to the resolution, the diversity of images, and the presence of color.
+The effectivity of the implementation was shown on three different datasets: MNIST, SLT10 and a Pneumonia Chest X-Ray dataset. The datasets were chosen to cover a variaty of resolutions, levels of image diversity, and presence of color.
 
 ### Pneumonia Chest X-Ray dataset
 The following results were obtained on the dataset as publised in (*Identifying Medical Diagnoses and Treatable Diseases by Image-Based Deep Learning*
