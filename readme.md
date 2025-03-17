@@ -9,6 +9,7 @@ The implementation is demonstrated by reconstructing on 3 different datasets. It
 *Animation of the progression of image reconstruction during training: shows a reconstructed validation sample for each epoch while training*
 
 ## Roadmap
+I plan to work on the following features in the coming time, listed by order:
 - Implement hierarchical latent representations to model image information at several scales simultaneously.
 - Replace convolution based encoder/decoders by vision transformers
 - allow model to directly reconstruct 3D data.
