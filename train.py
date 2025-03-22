@@ -8,15 +8,15 @@ from torch.utils.data import DataLoader
 
 from torchinfo import summary
 from torch.utils.tensorboard import SummaryWriter
+from pathlib import Path
+from PIL import Image as im 
 
+import numpy as np
 
 def train_vq_vae(settings):
 
     # Tensorboard for logging
     writer = SummaryWriter()
-    # Tensorboard doesnt support dicts in hparam dict so lets unpack
-    hpam_dict = {key:value for key,value in settings.items() if not isinstance(value, dict)} | settings["model_settings"]
-    writer.add_hparams(hpam_dict, {})
 
     # Print settings and info
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -24,26 +24,22 @@ def train_vq_vae(settings):
     print(f"Device: {device}" + "\n")
 
     # Loading dataset
-    train, test, input_shape, channels = get_dataset(settings["dataset"], print_stats=True)
-    if settings["dataset"] == "x-ray":
-        train_var = 0.1102
-    else:
-        train_var = (train.data /255.0).var()
-    dataloader_train = DataLoader(train, batch_size=settings["batch_size"], shuffle=True, drop_last=True, num_workers=0)
-    dataloader_test = DataLoader(test, batch_size=256, num_workers=0)
+    train, test, input_shape, channels, train_var = get_dataset(settings["dataset"], print_stats=True)
+    
+    dataloader_train = DataLoader(train, batch_size=settings["batch_size"], shuffle=True, drop_last=True, pin_memory=False, num_workers=6)
+    dataloader_test = DataLoader(test, batch_size=settings["batch_size"], pin_memory=False)
 
     # Setting up model
     model_settings = settings["model_settings"]
     model_settings["num_channels"] = channels
     model_settings["input_shape"] = input_shape
     model = VQVAE(model_settings).to(device)
-    if settings["print_debug"]:
-        print(summary(VQVAE(), input_size=(32, 1, 28,28)))
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=settings["learning_rate"], amsgrad=False)
+    optimizer = torch.optim.Adam(model.parameters(), lr=settings["learning_rate"], amsgrad=False, weight_decay=1e-5)
 
     # Training loop
     train_losses, test_losses = [], []
+    best_test_loss = float("inf")
     for epoch in range(settings["max_epochs"]):
         train_losses_epoch = []
         print(f"Epoch: {epoch}/{settings["max_epochs"]}")
@@ -59,6 +55,17 @@ def train_vq_vae(settings):
             train_losses_epoch.append(loss.item())
             optimizer.zero_grad()
 
+            if (batch_i + 1) % 100 == 0:
+                writer.add_scalar("Loss/train (epochs)", sum(train_losses_epoch[-100:])/100, epoch*len(dataloader_train) + batch_i)
+                
+                with torch.no_grad():
+                    x_test, y_test = next(iter(dataloader_test))
+                    x_test = x_test.to(device)
+                    pred, vq_loss = model(x_test)
+                    grid = plot_grid_samples_tensor(pred[:settings["example_image_amount"]])
+                    writer.add_image("Epoch1 reconstructions", grid, batch_i)
+
+            """
             # Save reconstructions sub-epoch level for first epoch
             if (settings["save_reconstructions_first_epoch"] and (batch_i % 20 == 0) and epoch == 0):
                 for x_test, y_test in dataloader_test:
@@ -67,16 +74,18 @@ def train_vq_vae(settings):
                 pred, vq_loss = model(x_test)
                 grid = plot_grid_samples_tensor(pred[:settings["example_image_amount"]])
                 writer.add_image("Epoch1 reconstructions", grid, batch_i)
-            
+            """
         print(f"Train loss: {sum(train_losses_epoch) / len(train_losses_epoch)}")
         train_losses.append(sum(train_losses_epoch) / len(train_losses_epoch))
         writer.add_scalar("Loss/train", train_losses[-1], epoch)
-
+        
+        """
         #  Early stopping
         epoch_delta = settings["early_stopping_epochs"]
         if len(train_losses) > epoch_delta and max(train_losses[-epoch_delta:-1]) < train_losses[-1]:
             print("Early stopping")
-            break
+            break"
+        """
         
         # Evaluation
         model.eval()
@@ -89,11 +98,17 @@ def train_vq_vae(settings):
                 test_losses_epoch.append(loss.item())
             
             if epoch == 0: # Save target
-                grid = plot_grid_samples_tensor(x_test[:settings["example_image_amount"]])
+                grid = plot_grid_samples_tensor(x_test[:settings["example_image_amount"]].cpu())
                 writer.add_image("Original", grid, epoch)
             # Save reconstruction
-            grid = plot_grid_samples_tensor(pred[:settings["example_image_amount"]])
+            grid = plot_grid_samples_tensor(pred[:settings["example_image_amount"]].cpu())
             writer.add_image("Reconstruction", grid, epoch)
+            
+            foldername = "reconstructions/"
+            grid = grid.movedim(0,-1)
+            image = im.fromarray((grid.cpu().numpy() * 255).astype(np.uint8))
+            Path(foldername).mkdir(parents=True, exist_ok=True)
+            image.save(f"{foldername}{epoch}.png")
 
             print(f"Test loss: {sum(test_losses_epoch) / len(test_losses_epoch)}")
             test_losses.append(sum(test_losses_epoch) / len(test_losses_epoch))
@@ -103,7 +118,10 @@ def train_vq_vae(settings):
             import os
             path = f"models/saved_models/{settings["dataset"]}/"
             os.makedirs(path, exist_ok = True) 
-            torch.save(model.state_dict(), path + "model.pt")
+            torch.save(model.state_dict(), path + "model_latest.pt")
+            if test_losses[-1] < best_test_loss:
+                best_test_loss = test_losses[-1]
+                torch.save(model.state_dict(), path + f"model_best({epoch}).pt")
 
 if __name__ == "__main__":
     settings = {

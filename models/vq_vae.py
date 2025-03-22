@@ -37,7 +37,8 @@ class Encoder(torch.nn.Module):
             nn.ReLU(),
             nn.Conv2d(num_hidden//2, num_hidden, stride=2, kernel_size=4, padding=1),
             nn.ReLU(),
-            nn.Conv2d(num_hidden, num_hidden, stride=1, kernel_size=3, padding=1),
+            nn.Conv2d(num_hidden, num_hidden, stride=2, kernel_size=3, padding=1),
+
             ResidualLayer(num_hidden, num_hidden, num_residual_hidden),
             ResidualLayer(num_hidden, num_hidden, num_residual_hidden),   
             nn.ReLU(),       
@@ -109,6 +110,8 @@ class Decoder(torch.nn.Module):
             nn.Conv2d(embedding_dim, num_hidden, stride=1, kernel_size=3, padding=1),
             ResidualLayer(num_hidden, num_hidden, num_residual_hidden),
             ResidualLayer(num_hidden, num_hidden, num_residual_hidden),
+            nn.ReLU(),
+            nn.ConvTranspose2d(num_hidden, num_hidden, stride=2, kernel_size=4, padding=1),
             nn.ReLU(),
             nn.ConvTranspose2d(num_hidden, num_hidden//2 ,kernel_size=4, stride=2, padding=1),
             nn.ReLU(),
