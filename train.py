@@ -35,7 +35,9 @@ def train_vq_vae(settings):
     model_settings["input_shape"] = input_shape
     model = VQVAE(model_settings).to(device)
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=settings["learning_rate"], amsgrad=False, weight_decay=1e-5)
+    optimizer = torch.optim.Adam(model.parameters(), lr=settings["learning_rate"])
+
+    scaler = torch.amp.GradScaler("cuda" ,enabled=True)
 
     # Training loop
     train_losses, test_losses = [], []
@@ -48,10 +50,13 @@ def train_vq_vae(settings):
         model.train()
         for batch_i, (x_train, _) in enumerate(dataloader_train):
             x_train = x_train.to(device)
-            pred, vq_loss = model(x_train)
-            loss = (torch.nn.functional.mse_loss(x_train, pred) / train_var) + vq_loss
-            loss.backward()
-            optimizer.step()
+            with torch.autocast(device_type=device, dtype=torch.float16, enabled=True):
+                pred, vq_loss = model(x_train)
+                mse = torch.nn.functional.mse_loss(x_train, pred)
+                loss = (mse / train_var) + vq_loss
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
             train_losses_epoch.append(loss.item())
             optimizer.zero_grad()
 
@@ -61,7 +66,8 @@ def train_vq_vae(settings):
                 with torch.no_grad():
                     x_test, y_test = next(iter(dataloader_test))
                     x_test = x_test.to(device)
-                    pred, vq_loss = model(x_test)
+                    with torch.autocast(device_type=device, dtype=torch.float16, enabled=True):
+                        pred, vq_loss = model(x_test)
                     grid = plot_grid_samples_tensor(pred[:settings["example_image_amount"]])
                     writer.add_image("Epoch1 reconstructions", grid, batch_i)
 
@@ -91,11 +97,15 @@ def train_vq_vae(settings):
         model.eval()
         with torch.no_grad():
             test_losses_epoch = []
+            test_mse_epoch = []
             for x_test, y_test in dataloader_test:
                 x_test = x_test.to(device)
-                pred, vq_loss = model(x_test)
-                loss = (torch.nn.functional.mse_loss(x_test, pred) / train_var) + vq_loss
+                with torch.autocast(device_type=device, dtype=torch.float16, enabled=True):
+                    pred, vq_loss = model(x_test)
+                    mse = torch.nn.functional.mse_loss(x_test, pred)
+                    loss = (mse / train_var) + vq_loss
                 test_losses_epoch.append(loss.item())
+                test_mse_epoch.append(mse.item())
             
             if epoch == 0: # Save target
                 grid = plot_grid_samples_tensor(x_test[:settings["example_image_amount"]].cpu())
@@ -113,6 +123,7 @@ def train_vq_vae(settings):
             print(f"Test loss: {sum(test_losses_epoch) / len(test_losses_epoch)}")
             test_losses.append(sum(test_losses_epoch) / len(test_losses_epoch))
             writer.add_scalar("Loss/test", test_losses[-1], epoch)
+            writer.add_scalar("MSE/test", sum(test_mse_epoch) / len(test_mse_epoch), epoch)
 
         if settings["save_model"]:
             import os

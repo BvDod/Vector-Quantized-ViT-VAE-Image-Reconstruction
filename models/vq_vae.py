@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import math
+from models.vq_vae_vit import EncoderVIT
 
 
 class VQVAE(torch.nn.Module):
@@ -11,7 +12,10 @@ class VQVAE(torch.nn.Module):
         super(VQVAE, self).__init__()
         self.model_settings = model_settings
         
-        self.encoder = Encoder(model_settings)
+        if model_settings["encoder_architecture"] == "VIT":
+            self.encoder = EncoderVIT(model_settings)
+        else:
+            self.encoder = Encoder(model_settings)
         self.VQ = VectorQuantisizer(model_settings)
         self.decoder = Decoder(model_settings)
 
