@@ -11,7 +11,7 @@ The implementation is demonstrated by reconstructing on 3 different datasets. It
 ## Roadmap
 I plan to work on the following features in the coming time, listed by order:
 - Implement hierarchical latent representations to model image information at several scales simultaneously.
-- Replace convolution based encoder/decoders by vision transformers
+- Replace convolution based encoder/decoders by vision transformers <- working on this right now
 - allow model to directly reconstruct 3D data.
 
   
