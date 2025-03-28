@@ -1,6 +1,8 @@
-# Vector Quantized VAE: Image Reconstruction <br>(Implementation in PyTorch)
+# Vector Quantized ViT-VAE: Image Reconstruction <br>(Implementation in PyTorch)
 ![image](https://github.com/user-attachments/assets/c1edc415-37a4-4754-8d35-b621ed789870)
 This repository contains my PyTorch implementation of the Vector Quantized Variational Auto Encoder as described by van den Oord et al in *Neural Discrete Representation Learning* applied to images (source of the architecture figure). The implementation was built according to the description in the paper. 
+
+*UPDATE: added support for Vision Transformer-based encoder and decoder, using latent representations that are 4 times smaller than before, and demonstrated said implementation on the celebA-HQ dataset at 256x256. See section "Update: vision transformer support"*
 
 The implementation is demonstrated by reconstructing on 3 different datasets. It is also shown how embeddings can be extracted, and how these can be used for training a prediction model.
 
