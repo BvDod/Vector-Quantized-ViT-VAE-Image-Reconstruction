@@ -2,20 +2,14 @@
 ![image](https://github.com/user-attachments/assets/c1edc415-37a4-4754-8d35-b621ed789870)
 This repository contains my PyTorch implementation of the Vector Quantized Variational Auto Encoder as described by van den Oord et al in *Neural Discrete Representation Learning* applied to images (source of the architecture figure). The implementation was built according to the description in the paper. 
 
-*UPDATE: added support for Vision Transformer-based encoder and decoder, using latent representations that are 4 times smaller than before, and demonstrated said implementation on the celebA-HQ dataset at 256x256. See section "Update: vision transformer support"*
-
 The implementation is demonstrated by reconstructing on 3 different datasets. It is also shown how embeddings can be extracted, and how these can be used for training a prediction model.
 
 ![1](https://github.com/user-attachments/assets/17848f6f-7924-42a2-926e-cc9e13c6a03e)
 
 *Animation of the progression of image reconstruction during training: shows a reconstructed validation sample for each epoch while training*
 
-## Roadmap
-I plan to work on the following features in the coming time, listed by order:
-- Implement hierarchical latent representations to model image information at several scales simultaneously.
-- Replace convolution based encoder/decoders by vision transformers **<- working on this right now**
-- allow model to directly reconstruct 3D data.
-
+## Update: Vision-Transformer based encoder and decoder.
+The decoder and encoder architecture can now be changed from CNN-based to ViT-based by switching *encoder_architecture* and *decoder_architecture* from *CNN* to *VIT*. Also added support for reconstruction on the celebA dataset, see *train_celebA.py* Now using a latent representation that is 4 times smaller than before.
   
 ## Introduction
 The Vector Quantized VAE is a variation of the Variational Auto Encoder, where the latent space consists of a limited amount of discrete embeddings, which are "quantized" to, using a closest neighbour search. These discrete embeddings are learned during training, and result in easier training, less likelyhood of posterior-collapse and often sharper looking reconstructions.
@@ -58,8 +52,6 @@ MNIST is handwritten digit recognition dataset containing 70,000 grayscale image
 
 ![alt text](figures/mnist_loss.png)
 
-## Update: Vision-Transformer based encoder and decoder.
-The decoder and encoder architecture can now be changed from CNN-based to ViT-based by switching *encoder_architecture* and *decoder_architecture* from *CNN* to *VIT*. Also added support for reconstruction on the celebA dataset, see *train_celebA.py* 
 
 ## Future steps/ improvements
 
@@ -71,4 +63,11 @@ Hierarchical VQ-VAE is an extension of the VQ-VAE architecture, where different 
 
 ### PixelCNN for sampling new data
 Since the latent space in VQ VAE consists of discrete codes, there is no normally distributed latent space where we can sample new valid samples from. However PixelCNN, a separate autoregressive model can be trained to effectvily generate new meaningfull samples.
+
+### Roadmap
+I plan to work on the following features in the coming time, listed by order:
+- Implement hierarchical latent representations to model image information at several scales simultaneously.
+- Replace convolution based encoder/decoders by vision transformers **<- working on this right now**
+- allow model to directly reconstruct 3D data.
+
 
