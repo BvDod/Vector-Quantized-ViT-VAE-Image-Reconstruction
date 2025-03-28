@@ -14,13 +14,13 @@ if __name__ == "__main__":
         "early_stopping_epochs": 3,
 
         "model_settings" : {
-            "encoder_architecture": "VIT",
+            "encoder_architecture": "CNN",
             "num_hidden": 128,
-            "num_residual_hidden": 32,
+            "num_residual_hidden": 128,
             "embedding_dim": 64,
             "num_embeddings": 512,
-            "commitment_cost": 0.5,
-            "transformer_layers": 6,
+            "commitment_cost": 0.25,
+            "transformer_layers": 5,
             "attention_heads": 4,
             "patch_size": 8,
         }

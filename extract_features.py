@@ -18,7 +18,7 @@ def extract_embeddings(dataset, model):
             transforms.ToTensor(),
         ])
     val = torchvision.datasets.ImageFolder("datasets/xray/Data/val/", transform=img_transforms)
-    dataloader = torch.utils.data.DataLoader(val, batch_size=256, num_workers=0, shuffle=True)
+    dataloader = torch.utils.data.DataLoader(val, batch_size=128, num_workers=0, shuffle=True)
 
     # Load model
     model_settings = {
@@ -35,25 +35,27 @@ def extract_embeddings(dataset, model):
     model.to(device)
     
     
-    labels = []
-    images = []
-    encoder_embeddings = [] # Embeddings before vq
-    quantized_embeddings = [] # Embeddings after vq
+    #labels = []
+    #images = []
+    #encoder_embeddings = [] # Embeddings before vq
+    #quantized_embeddings = [] # Embeddings after vq
+    discrete_embeddings = []
 
     with torch.no_grad():
         for x_test, y_test in dataloader:
             print(x_test.shape)
-            images.append(x_test.cpu())
+            # images.append(x_test.cpu())
             x_test= x_test.to(device)
             
             # Embeddings just before discretizing them
             x = model.encoder(x_test)
-            encoder_embeddings.append(x.cpu())
+            #encoder_embeddings.append(x.cpu())
 
             # Discrete embeddings and Quantized embeddings
             quantized, vq_loss, discrete_embedding = model.VQ(x)
-            quantized_embeddings.append(quantized.cpu())
-            labels.append(y_test.cpu())
+            #quantized_embeddings.append(quantized.cpu())
+            #labels.append(y_test.cpu())
+            discrete_embeddings.append(torch.argmax(discrete_embedding.cpu(), dim=1).short())
 
             # Because we are independently running parts of the model, some data is retained between batches
             del x_test, x, quantized, vq_loss, discrete_embedding
@@ -63,15 +65,18 @@ def extract_embeddings(dataset, model):
     dir = "datasets/xray_embeddings/"
     os.makedirs(dir, exist_ok = True) 
 
-    labels = torch.concat(labels)
-    images = torch.concat(images)
-    encoder_embeddings = torch.concat(encoder_embeddings)
-    quantized_embeddings = torch.concat(quantized_embeddings)
+    #labels = torch.concat(labels)
+    #images = torch.concat(images)
+    #encoder_embeddings = torch.concat(encoder_embeddings)
+    #quantized_embeddings = torch.concat(quantized_embeddings)
+    discrete_embeddings = torch.concat(discrete_embeddings)
+    print(discrete_embeddings.dtype)
     
-    torch.save(labels, dir + "labels.pt")
-    torch.save(images, dir + "images_transformed.pt")
-    torch.save(encoder_embeddings, dir + "encoded.pt")
-    torch.save(quantized_embeddings, dir + "quantized.pt")
+    #torch.save(labels, dir + "labels.pt")
+    #torch.save(images, dir + "images_transformed.pt")
+    #torch.save(encoder_embeddings, dir + "encoded.pt")
+    #torch.save(quantized_embeddings, dir + "quantized.pt")
+    torch.save(discrete_embeddings, dir + "discrete.pt")
 
 
 

@@ -16,9 +16,15 @@ def get_dataset(dataset_name: str, print_stats = False):
 
     elif dataset_name == "celebA":
         img_transforms = transforms.Compose([
-            transforms.Resize((512, 512)),
+            transforms.Resize((256, 256)),
+            transforms.RandomHorizontalFlip(),
+            transforms.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.2, hue=0.1),
+            transforms.RandomAffine(3, scale=(0.95, 1.05)),
             transforms.ToTensor(),
         ])
+        transforms_val = transforms.Compose([
+            transforms.Resize((256, 256)),
+            transforms.ToTensor(),])
         
     else:   
         img_transforms = transforms.Compose([                                     
@@ -49,8 +55,8 @@ def get_dataset(dataset_name: str, print_stats = False):
     
     if dataset_name == "celebA":
         train = torchvision.datasets.ImageFolder("./datasets/celeba_hq/train/", transform=img_transforms)
-        test = torchvision.datasets.ImageFolder("./datasets/celeba_hq/val/", transform=img_transforms)
-        input_shape = (512, 512)
+        test = torchvision.datasets.ImageFolder("./datasets/celeba_hq/val/", transform=transforms_val)
+        input_shape = (256, 256)
         channels = 3
         var = 0.0692 # Precomputed
 

@@ -6,7 +6,7 @@ if __name__ == "__main__":
         "save_model": True,
 
         "print_debug": False,
-        "example_image_amount": 8,
+        "example_image_amount": 4,
         "save_reconstructions_first_epoch": True,
         "batch_size": 32,
         "learning_rate": 1e-3, # for x-ray

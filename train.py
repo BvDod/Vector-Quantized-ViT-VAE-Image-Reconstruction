@@ -27,7 +27,7 @@ def train_vq_vae(settings):
     train, test, input_shape, channels, train_var = get_dataset(settings["dataset"], print_stats=True)
     
     dataloader_train = DataLoader(train, batch_size=settings["batch_size"], shuffle=True, drop_last=True, pin_memory=False, num_workers=6)
-    dataloader_test = DataLoader(test, batch_size=settings["batch_size"], pin_memory=False)
+    dataloader_test = DataLoader(test, batch_size=256, pin_memory=False, num_workers=6)
 
     # Setting up model
     model_settings = settings["model_settings"]

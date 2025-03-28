@@ -23,6 +23,7 @@ class EncoderVIT(torch.nn.Module):
         self.positional_embedding = PositionalEmbedding(self.patch_embedding.num_patches, model_settings)
         
         self.transformers = nn.Sequential(*[TransformerBlock(model_settings) for i in range(model_settings["transformer_layers"])])
+        self.relu = nn.ReLU()  
         self.conv_to_vq_size = nn.Conv2d(self.num_hidden, self.embedding_size, stride=1, kernel_size=1)
 
         
@@ -37,6 +38,7 @@ class EncoderVIT(torch.nn.Module):
                 (self.input_shape[0]//self.patch_size), 
                 (self.input_shape[1]//self.patch_size), 
                 self.num_hidden).movedim(-1, 1)
+        x = self.relu(x)
         x = self.conv_to_vq_size(x)
         return x
 

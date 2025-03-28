@@ -8,7 +8,7 @@ class xrayDataset(Dataset):
 
     def __init__(self, root, transform=None, train=True):
         self.transform = transform
-        self.data_location = root + "Data/train/*" if train else root + "Data/test/*"
+        self.data_location = root + "/train/*" if train else root + "/test/*"
         self.data = []
         # Load all images in the target file folder
         for f in glob.iglob(self.data_location):
