@@ -23,7 +23,7 @@ The training loop can be found in `train.py`, and the implementation of the VQ-V
 
 
 ## Demonstration: Reconstruction on 3 different datasets
-The effectivity of the implementation was shown on three different datasets: MNIST, SLT10 and a Pneumonia Chest X-Ray dataset. The datasets were chosen to cover a variaty of resolutions, levels of image diversity, and presence of color.
+The effectiveness of the implementation was shown on three different datasets: MNIST, SLT10 and a Pneumonia Chest X-Ray dataset. The datasets were chosen to cover a variety of resolutions, levels of image diversity, and presence of color. The latent representation of these datasets was set at 1/16 of the dataset resolution. For color-images, this results in a size reduction of **98%** from the input to the latent representation.
 
 ### Pneumonia Chest X-Ray dataset
 <details>
