@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import math
 from models.vq_vae_vit import EncoderVIT
+from models.vq_vae_vit import DecoderVIT
 
 
 class VQVAE(torch.nn.Module):
@@ -14,10 +15,22 @@ class VQVAE(torch.nn.Module):
         
         if model_settings["encoder_architecture"] == "VIT":
             self.encoder = EncoderVIT(model_settings)
-        else:
+            model_settings["num_patches"] = self.encoder.patch_embedding.num_patches
+        elif model_settings["encoder_architecture"] == "CNN":
             self.encoder = Encoder(model_settings)
+        else:
+            print("Error: unsupported encoder")
+            exit()
+
         self.VQ = VectorQuantisizer(model_settings)
-        self.decoder = Decoder(model_settings)
+
+        if model_settings["decoder_architecture"] == "VIT":
+            self.decoder = DecoderVIT(model_settings)
+        elif model_settings["decoder_architecture"] == "CNN":
+            self.decoder = Decoder(model_settings)
+        else:
+            print("Error: unsupported decoder")
+            exit()
 
     def forward(self, x):
         x = self.encoder(x)

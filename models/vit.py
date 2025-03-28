@@ -33,7 +33,7 @@ class PositionalEmbedding(nn.Module):
         super(PositionalEmbedding, self).__init__()
         self.num_embeddings = patch_embeddings 
         self.embedding_dim = model_settings["num_hidden"]
-        self.device = "cuda"
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
         self.embedding = nn.Embedding(num_embeddings=self.num_embeddings, embedding_dim=self.embedding_dim, device=self.device)
 

@@ -14,7 +14,8 @@ if __name__ == "__main__":
         "early_stopping_epochs": 3,
 
         "model_settings" : {
-            "encoder_architecture": "CNN",
+            "encoder_architecture": "VIT",
+            "decoder_architecture": "VIT",
             "num_hidden": 128,
             "num_residual_hidden": 128,
             "embedding_dim": 64,
