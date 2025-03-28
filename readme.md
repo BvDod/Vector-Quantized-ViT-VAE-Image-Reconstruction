@@ -58,6 +58,9 @@ MNIST is handwritten digit recognition dataset containing 70,000 grayscale image
 
 ![alt text](figures/mnist_loss.png)
 
+## Update: Vision-Transformer based encoder and decoder.
+The decoder and encoder architecture can now be changed from CNN-based to ViT-based by switching *encoder_architecture* and *decoder_architecture* from *CNN* to *VIT*. Also added support for reconstruction on the celebA dataset, see *train_celebA.py* 
+
 ## Future steps/ improvements
 
 ### Deep Feature Encoding for Medical Data
