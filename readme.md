@@ -8,8 +8,8 @@ The implementation is demonstrated by reconstructing on 3 different datasets. It
 
 *Animation of the progression of image reconstruction during training: shows a reconstructed validation sample for each epoch while training*
 
-## Update: Vision-Transformer based encoder and decoder.
-The decoder and encoder architecture can now be changed from CNN-based to ViT-based by switching *encoder_architecture* and *decoder_architecture* from *CNN* to *VIT*. Also added support for reconstruction on the celebA dataset, see *train_celebA.py* Now using a latent representation that is 4 times smaller than before.
+## UPDATE: Vision-Transformer based encoder and decoder.
+The decoder and encoder architecture can now be changed from CNN-based to ViT-based by switching *encoder_architecture* and *decoder_architecture* from *CNN* to *VIT*. Also added support for reconstruction on high resolution celebrity face: the celebA dataset, see *train_celebA.py*. Now using a latent representation that is 4 times smaller than before.
   
 ## Introduction
 The Vector Quantized VAE is a variation of the Variational Auto Encoder, where the latent space consists of a limited amount of discrete embeddings, which are "quantized" to, using a closest neighbour search. These discrete embeddings are learned during training, and result in easier training, less likelyhood of posterior-collapse and often sharper looking reconstructions.
@@ -21,23 +21,30 @@ My actual motivation for this implementation is that i want to train such a VQ-V
 
 The training loop can be found in `train.py`, and the implementation of the VQ-VAE can be found in `model/vq_vae.py`
 
-## Universal embeddings: extraction and prediction demos:
-A demonstration of how a trained VQ VAE model can be used to first extract usefull features, and to then use these extracted features in a prediction model, can be found in `extract_features.py` and `predict_on_embeddings.py`.
-
 
 ## Demonstration: Reconstruction on 3 different datasets
 The effectivity of the implementation was shown on three different datasets: MNIST, SLT10 and a Pneumonia Chest X-Ray dataset. The datasets were chosen to cover a variaty of resolutions, levels of image diversity, and presence of color.
 
 ### Pneumonia Chest X-Ray dataset
+<details>
+<summary> Expand for loss graphs and reconstruction images</summary>
+
 The following results were obtained on the dataset as publised in (*Identifying Medical Diagnoses and Treatable Diseases by Image-Based Deep Learning*
 Kermany, Daniel S. et al.) The dataset contains a total of 5,863 images, with a resolution of 256x256, where each image is labelled with the presence or abscence of Pneumonia. see `train_x_ray.py` for the used script and hyperparameters.
+
 #### X-Ray: Validation Reconstruction
 
 <img src="figures/xray.png" width="700">
 
 ![alt text](figures/xray_loss.png)
+</details>
+
 
 ### SLT10
+
+<details>
+<summary> Expand for loss graphs and reconstruction images</summary>
+
 The STL-10 dataset is an image recognition dataset for developing unsupervised feature learning, were a very large set of unlabeled examples is provided with a resolution of 96x96. see `train_SLT10.py` for the used script and hyperparameters.
 
 #### SLT10: Validation Reconstruction
@@ -45,15 +52,25 @@ The STL-10 dataset is an image recognition dataset for developing unsupervised f
 
 ![alt text](figures/slt10_loss.png)
 
+</details>
+
 ### MNIST
+
+<details>
+<summary> Expand for loss graphs and reconstruction images</summary>
+
 MNIST is handwritten digit recognition dataset containing 70,000 grayscale images of handwritten digits, sized 28x28 pixels. see `train_MNIST.py` for the used script and hyperparameters.
 
 <img src="figures/mnist.png" width="700">
 
 ![alt text](figures/mnist_loss.png)
 
+</details>
 
-## Future steps/ improvements
+## Universal embeddings: extraction and prediction demos:
+A demonstration of how a trained VQ VAE model can be used to first extract usefull features, and to then use these extracted features in a prediction model, can be found in `extract_features.py` and `predict_on_embeddings.py`.
+
+## Future steps / improvements
 
 ### Deep Feature Encoding for Medical Data
   My actual goal in creating this implementation, is to use the embeddings as created by this model for feature extraction of medical images, improving model performance in cases were few labelled, but plenty of unlabelled images are available, which is often the case. This will be the next step. I want to show the validity of this approach by implementation.
