@@ -6,10 +6,10 @@ The implementation is demonstrated by reconstructing on 3 different datasets. It
 
 ![1](https://github.com/user-attachments/assets/17848f6f-7924-42a2-926e-cc9e13c6a03e)
 
-*Animation of the progression of image reconstruction during training: shows a reconstructed validation sample for each epoch while training*
+*Animation of validation reconstruction after each training epoch. Using CNN encoder and decoder, and latent resolution that is 1/16th the size of the input*
 
 ## UPDATE: Vision-Transformer based encoder and decoder.
-The decoder and encoder architecture can now be changed from CNN-based to ViT-based by switching *encoder_architecture* and *decoder_architecture* from *CNN* to *VIT*. Also added support for reconstruction on high resolution celebrity face: the celebA dataset, see *train_celebA.py*. Now using a latent representation that is 4 times smaller than before.
+The decoder and encoder architecture can now be changed from CNN-based to ViT-based by switching *encoder_architecture* and *decoder_architecture* from *CNN* to *VIT*. Also added support for reconstruction on high resolution celebrity face: the celebA dataset, see *train_celebA.py*. Now using a latent representation that 1/64th the size of the input resolution
   
 ## Introduction
 The Vector Quantized VAE is a variation of the Variational Auto Encoder, where the latent space consists of a limited amount of discrete embeddings, which are "quantized" to, using a closest neighbour search. These discrete embeddings are learned during training, and result in easier training, less likelyhood of posterior-collapse and often sharper looking reconstructions.
