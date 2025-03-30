@@ -8,7 +8,7 @@ if __name__ == "__main__":
         "print_debug": False,
         "example_image_amount": 4,
         "save_reconstructions_first_epoch": True,
-        "batch_size": 32,
+        "batch_size": 16,
         "learning_rate": 3e-4, # for x-ray
         "max_epochs": 100000,
         "early_stopping_epochs": 3,

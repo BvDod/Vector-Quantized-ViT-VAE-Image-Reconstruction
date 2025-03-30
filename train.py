@@ -27,7 +27,7 @@ def train_vq_vae(settings):
     train, test, input_shape, channels, train_var = get_dataset(settings["dataset"], print_stats=True)
     
     dataloader_train = DataLoader(train, batch_size=settings["batch_size"], shuffle=True, drop_last=True, pin_memory=False, num_workers=6)
-    dataloader_test = DataLoader(test, batch_size=256, pin_memory=False, num_workers=6)
+    dataloader_test = DataLoader(test, batch_size=32, pin_memory=False, num_workers=6)
 
     # Setting up model
     model_settings = settings["model_settings"]
@@ -60,6 +60,7 @@ def train_vq_vae(settings):
             train_losses_epoch.append(loss.item())
             optimizer.zero_grad()
 
+            '''
             if (batch_i + 1) % 100 == 0:
                 writer.add_scalar("Loss/train (epochs)", sum(train_losses_epoch[-100:])/100, epoch*len(dataloader_train) + batch_i)
                 
@@ -70,7 +71,7 @@ def train_vq_vae(settings):
                         pred, vq_loss = model(x_test)
                     grid = plot_grid_samples_tensor(pred[:settings["example_image_amount"]])
                     writer.add_image("Epoch1 reconstructions", grid, batch_i)
-
+            '''
             """
             # Save reconstructions sub-epoch level for first epoch
             if (settings["save_reconstructions_first_epoch"] and (batch_i % 20 == 0) and epoch == 0):

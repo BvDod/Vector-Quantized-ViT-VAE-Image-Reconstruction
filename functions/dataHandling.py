@@ -5,7 +5,7 @@ import torchvision.transforms as transforms
 from functions.customDatasets import xrayDataset
 
 
-def get_dataset(dataset_name: str, print_stats = False):
+def get_dataset(dataset_name: str, print_stats = False, disable_augmentation = False):
     """ Retrieves dataset with name dataset name from disk and returns it"""
 
     if dataset_name == "x-ray":
@@ -15,13 +15,21 @@ def get_dataset(dataset_name: str, print_stats = False):
         ])
 
     elif dataset_name == "celebA":
-        img_transforms = transforms.Compose([
-            transforms.Resize((256, 256)),
-            transforms.RandomHorizontalFlip(),
-            transforms.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.2, hue=0.1),
-            transforms.RandomAffine(3, scale=(0.95, 1.05)),
-            transforms.ToTensor(),
-        ])
+        if not disable_augmentation:
+            img_transforms = transforms.Compose([
+                transforms.Resize((256, 256)),
+                transforms.RandomHorizontalFlip(),
+                transforms.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.2, hue=0.1),
+                transforms.RandomAffine(3, scale=(0.95, 1.05)),
+                transforms.ToTensor(),
+            ])
+            
+        elif disable_augmentation:
+            img_transforms = transforms.Compose([
+                transforms.Resize((256, 256)),
+                transforms.ToTensor(),]
+            )
+
         transforms_val = transforms.Compose([
             transforms.Resize((256, 256)),
             transforms.ToTensor(),])
