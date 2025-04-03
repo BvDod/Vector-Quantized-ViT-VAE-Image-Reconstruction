@@ -2,6 +2,8 @@
 
 ![ezgif com-animated-gif-maker (3)](https://github.com/user-attachments/assets/deb5e1a9-54c4-4f0b-b4e9-ca5f1f3070a4)
 
+*Animation of validation reconstruction after each training epoch on the celebA-HQ 256x256 dataset. Using VIT encoder and decoder, and latent resolution of 32x32*
+
 ![image](https://github.com/user-attachments/assets/c1edc415-37a4-4754-8d35-b621ed789870)
 This repository contains my PyTorch implementation of the Vector Quantized Variational Auto Encoder as described by van den Oord et al in *Neural Discrete Representation Learning* applied to images (source of the architecture figure). The implementation was built according to the description in the paper. 
 
