@@ -13,6 +13,7 @@ from PIL import Image as im
 
 import numpy as np
 
+
 def train_vq_vae(settings):
 
     # Tensorboard for logging
@@ -26,14 +27,16 @@ def train_vq_vae(settings):
     # Loading dataset
     train, test, input_shape, channels, train_var = get_dataset(settings["dataset"], print_stats=True)
     
-    dataloader_train = DataLoader(train, batch_size=settings["batch_size"], shuffle=True, drop_last=True, pin_memory=False, num_workers=6)
-    dataloader_test = DataLoader(test, batch_size=32, pin_memory=False, num_workers=6)
+    dataloader_train = DataLoader(train, batch_size=settings["batch_size"], shuffle=True, drop_last=True, pin_memory=False)
+    dataloader_test = DataLoader(test, batch_size=32, pin_memory=False)
 
+    
     # Setting up model
     model_settings = settings["model_settings"]
     model_settings["num_channels"] = channels
     model_settings["input_shape"] = input_shape
     model = VQVAE(model_settings).to(device)
+    #model.load_state_dict(torch.load("models/saved_models/celebA/model_latest.pt", weights_only=True))
 
     optimizer = torch.optim.Adam(model.parameters(), lr=settings["learning_rate"])
 
@@ -44,6 +47,7 @@ def train_vq_vae(settings):
     best_test_loss = float("inf")
     for epoch in range(settings["max_epochs"]):
         train_losses_epoch = []
+        train_perplexity_epoch = []
         print(f"Epoch: {epoch}/{settings["max_epochs"]}")
         
         # Training
@@ -51,13 +55,14 @@ def train_vq_vae(settings):
         for batch_i, (x_train, _) in enumerate(dataloader_train):
             x_train = x_train.to(device)
             with torch.autocast(device_type=device, dtype=torch.float16, enabled=True):
-                pred, vq_loss = model(x_train)
+                pred, vq_loss, perplexity = model(x_train)
                 mse = torch.nn.functional.mse_loss(x_train, pred)
                 loss = (mse / train_var) + vq_loss
             scaler.scale(loss).backward()
             scaler.step(optimizer)
             scaler.update()
             train_losses_epoch.append(loss.item())
+            train_perplexity_epoch.append(perplexity.item())
             optimizer.zero_grad()
 
             '''
@@ -85,6 +90,7 @@ def train_vq_vae(settings):
         print(f"Train loss: {sum(train_losses_epoch) / len(train_losses_epoch)}")
         train_losses.append(sum(train_losses_epoch) / len(train_losses_epoch))
         writer.add_scalar("Loss/train", train_losses[-1], epoch)
+        writer.add_scalar("Perplexity/train", sum(train_perplexity_epoch) / len(train_perplexity_epoch), epoch)
         
         """
         #  Early stopping
@@ -99,14 +105,16 @@ def train_vq_vae(settings):
         with torch.no_grad():
             test_losses_epoch = []
             test_mse_epoch = []
+            test_perplexity_epoch = []
             for x_test, y_test in dataloader_test:
                 x_test = x_test.to(device)
                 with torch.autocast(device_type=device, dtype=torch.float16, enabled=True):
-                    pred, vq_loss = model(x_test)
+                    pred, vq_loss, perplexity = model(x_test)
                     mse = torch.nn.functional.mse_loss(x_test, pred)
                     loss = (mse / train_var) + vq_loss
                 test_losses_epoch.append(loss.item())
                 test_mse_epoch.append(mse.item())
+                test_perplexity_epoch.append(perplexity.item())
             
             if epoch == 0: # Save target
                 grid = plot_grid_samples_tensor(x_test[:settings["example_image_amount"]].cpu())
@@ -125,6 +133,7 @@ def train_vq_vae(settings):
             test_losses.append(sum(test_losses_epoch) / len(test_losses_epoch))
             writer.add_scalar("Loss/test", test_losses[-1], epoch)
             writer.add_scalar("MSE/test", sum(test_mse_epoch) / len(test_mse_epoch), epoch)
+            writer.add_scalar("Perplexity/test", sum(train_perplexity_epoch) / len(train_perplexity_epoch), epoch)
 
         if settings["save_model"]:
             import os

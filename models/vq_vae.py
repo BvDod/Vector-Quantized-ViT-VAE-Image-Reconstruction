@@ -33,10 +33,11 @@ class VQVAE(torch.nn.Module):
             exit()
 
     def forward(self, x):
+
         x = self.encoder(x)
-        quantized, vq_loss, discrete_embedding = self.VQ(x)
+        quantized, vq_loss, discrete_embedding, perplexity = self.VQ(x)
         x = self.decoder(quantized)
-        return x, vq_loss
+        return x, vq_loss, perplexity
 
 
 class Encoder(torch.nn.Module):
@@ -107,9 +108,12 @@ class VectorQuantisizer(torch.nn.Module):
         quantized = torch.movedim(quantized, -1, 1)
         discrete_embedding = torch.movedim(discrete_embedding, -1, 1)
         
-        # Should also calculate embedding space utilization, but not implemented here yet.
+        # Caculate perplexity
+        # Perpexity is a measure of how much all embeddings are equally used
 
-        return quantized, vq_loss, discrete_embedding
+        mean_embeddings = torch.mean(discrete_embedding.float(), dim=[0, 2, 3])
+        perplexity = torch.exp(-torch.sum(mean_embeddings * torch.log(mean_embeddings + 1e-12)))
+        return quantized, vq_loss, discrete_embedding, perplexity
 
         
 
