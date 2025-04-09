@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/f6e29b93-5f31-439b-92ec-ed594cb9301f)# Vector Quantized ViT-VAE: Image Reconstruction <br>(Implementation in PyTorch)
+# Vector Quantized ViT-VAE: Image Reconstruction <br>(Implementation in PyTorch)
 
 ![ezgif com-animated-gif-maker (3)](https://github.com/user-attachments/assets/deb5e1a9-54c4-4f0b-b4e9-ca5f1f3070a4)
 
