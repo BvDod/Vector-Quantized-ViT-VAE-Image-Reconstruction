@@ -1,4 +1,4 @@
-# Vector Quantized ViT-VAE: Image Reconstruction <br>(Implementation in PyTorch)
+![image](https://github.com/user-attachments/assets/f6e29b93-5f31-439b-92ec-ed594cb9301f)# Vector Quantized ViT-VAE: Image Reconstruction <br>(Implementation in PyTorch)
 
 ![ezgif com-animated-gif-maker (3)](https://github.com/user-attachments/assets/deb5e1a9-54c4-4f0b-b4e9-ca5f1f3070a4)
 
@@ -15,7 +15,10 @@ The implementation is demonstrated by reconstructing on 3 different datasets. It
 
 ## UPDATE: Vision-Transformer based encoder and decoder.
 The decoder and encoder architecture can now be changed from CNN-based to ViT-based by switching *encoder_architecture* and *decoder_architecture* from *CNN* to *VIT*. Also added support for reconstruction on high resolution celebrity face: the celebA dataset, see *train_celebA.py*. Now using a latent representation that 1/64th the size of the input resolution
-  
+
+## Other Updates
+- 9/4/2025: Implemented Perplexity of the codebook as a metric, which is also logged. Perplexity quantifies to what degree the available embeddings in the codebook are being used (and in what relative proportion as well)
+
 ## Introduction
 The Vector Quantized VAE is a variation of the Variational Auto Encoder, where the latent space consists of a limited amount of discrete embeddings, which are "quantized" to, using a closest neighbour search. These discrete embeddings are learned during training, and result in easier training, less likelyhood of posterior-collapse and often sharper looking reconstructions.
 
