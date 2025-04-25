@@ -78,21 +78,11 @@ MNIST is handwritten digit recognition dataset containing 70,000 grayscale image
 ## Universal embeddings: extraction and prediction demos:
 A demonstration of how a trained VQ VAE model can be used to first extract usefull features, and to then use these extracted features in a prediction model, can be found in `extract_features.py` and `predict_on_embeddings.py`.
 
-## Future steps / improvements
-
-### Deep Feature Encoding for Medical Data
-  My actual goal in creating this implementation, is to use the embeddings as created by this model for feature extraction of medical images, improving model performance in cases were few labelled, but plenty of unlabelled images are available, which is often the case. This will be the next step. I want to show the validity of this approach by implementation.
-
-### Hierarchical VQ-VAE
-Hierarchical VQ-VAE is an extension of the VQ-VAE architecture, where different latent spaces are learned at different scales of the image, effectively retaining information at all scales. In practice this VASTLY improves the amount of detail in the reconstruction.
-
-### PixelCNN for sampling new data
-Since the latent space in VQ VAE consists of discrete codes, there is no normally distributed latent space where we can sample new valid samples from. However PixelCNN, a separate autoregressive model can be trained to effectvily generate new meaningfull samples.
-
 ### Roadmap
 I plan to work on the following features in the coming time, listed by order:
+- Replace convolution based encoder/decoders by vision transformers (finished)
+- Implement pixel-cnn like model to sample from latent space (finished)
 - Implement hierarchical latent representations to model image information at several scales simultaneously.
-- Replace convolution based encoder/decoders by vision transformers **<- working on this right now**
 - allow model to directly reconstruct 3D data.
 
 
